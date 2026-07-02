@@ -68,6 +68,29 @@ docker compose up --build
 - API: http://localhost:8000
 - UI: http://localhost:8501
 
+## Evaluation
+
+`python scripts/evaluate_retrieval.py` runs the retriever against a hand-written set
+of 22 in-domain questions (each tied to a known-correct handbook page) and 5
+out-of-domain questions (should be rejected, not answered). Current results:
+
+| Metric | Value |
+|---|---|
+| Hit-rate@1 | 77% (17/22) |
+| Hit-rate@3 | 82% (18/22) |
+| Hit-rate@5 | 91% (20/22) |
+| MRR | 0.818 |
+| Correct rejection rate (out-of-domain) | 80% (4/5) |
+
+Two honest findings from this run: (1) hit-rate@1 lags hit-rate@5 by 14 points,
+meaning the correct page is usually retrieved but not always ranked first — a
+cross-encoder reranker over the top-5 candidates would likely close most of that
+gap; (2) the one rejection failure was "What is GitLab's current stock price?" —
+topically close enough to the benefits/compensation content to slip under the
+distance threshold even though it isn't actually answerable, showing that a purely
+distance-based relevance filter has a real, identifiable failure mode. Both are
+concrete, evidence-based next steps rather than guesses.
+
 ## Why this design
 
 - **Grounded, not hallucinated.** The system prompt restricts the model to the
