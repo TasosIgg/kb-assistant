@@ -1,0 +1,15 @@
+# --- RAG core ---
+sentence-transformers
+faiss-cpu
+llama-cpp-python
+huggingface_hub
+numpy
+
+# --- Ingestion ---
+requests
+
+# --- API & Frontend ---
+fastapi
+uvicorn
+pydantic
+streamlit
