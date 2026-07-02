@@ -25,7 +25,7 @@ class Generator:
         self.llm = Llama(
             model_path=str(MODEL_PATH),
             n_ctx=n_ctx,
-            n_threads=max(1, __import__("os").cpu_count() - 1),
+            n_threads=__import__("os").cpu_count(),
             verbose=False,
         )
 
@@ -44,7 +44,7 @@ class Generator:
 
         result = self.llm.create_chat_completion(
             messages=messages,
-            max_tokens=400,
+            max_tokens=250,
             temperature=0.2,
         )
         return result["choices"][0]["message"]["content"].strip()

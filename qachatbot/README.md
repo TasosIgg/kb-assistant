@@ -100,13 +100,14 @@ concrete, evidence-based next steps rather than guesses.
   testing: asking about GitLab's parental-leave policy returns a grounded,
   cited answer; asking an unrelated question (e.g. "what's the capital of
   France?") is declined in under 100ms without ever invoking the LLM.
-- **Small quantized model, CPU-only.** This runs on a laptop with no GPU
-  (~7.6GB RAM). A 3B-parameter model in q4 quantization (~2GB) was chosen over
-  a larger 7B+ model to fit that budget. The tradeoff is latency: real
-  questions currently take ~20–40 seconds end-to-end on CPU. In a production
-  deployment this would be traded for a GPU-backed model server or a hosted
-  LLM API for sub-second responses — this project deliberately optimizes for
-  "runs anywhere, zero API cost" instead.
+- **Small quantized model, CPU-only.** A 3B-parameter model in q4 quantization
+  (~2GB) was chosen over a larger 7B+ model specifically to fit CPU-only,
+  memory-constrained hardware (tested on a 12-core/7.6GB laptop with no GPU;
+  the public demo runs on a free 2-vCPU Hugging Face Space, which is slower
+  still). The tradeoff is latency instead of cost: this design deliberately
+  optimizes for "runs anywhere, zero API cost, zero GPU dependency" over
+  response speed. In a production deployment this would be traded for a
+  GPU-backed model server or a hosted LLM API for sub-second responses.
 - **Self-contained container.** The Docker image bakes in the model and index
   so the whole stack (retrieval + generation) ships as one artifact, which is
   what makes a single-container deploy target (e.g. Hugging Face Spaces)
