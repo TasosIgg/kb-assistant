@@ -27,7 +27,7 @@ live source.
                             │ top-k relevant chunks
                             ▼
                      ┌─────────────┐
-                     │  Generator  │  Qwen2.5-3B-Instruct, GGUF q4, CPU inference
+                     │  Generator  │  Qwen2.5-1.5B-Instruct, GGUF q4, CPU inference
                      └──────┬──────┘  (llama.cpp) — grounded, cites sources,
                             │          declines when context is irrelevant
                             ▼
@@ -158,14 +158,26 @@ past what a typical tutorial-grade RAG demo includes:
   testing: asking about GitLab's parental-leave policy returns a grounded,
   cited answer; asking an unrelated question (e.g. "what's the capital of
   France?") is declined in under 100ms without ever invoking the LLM.
-- **Small quantized model, CPU-only.** A 3B-parameter model in q4 quantization
-  (~2GB) was chosen over a larger 7B+ model specifically to fit CPU-only,
-  memory-constrained hardware (tested on a 12-core/7.6GB laptop with no GPU;
-  the public demo runs on a free 2-vCPU Hugging Face Space, which is slower
-  still). The tradeoff is latency instead of cost: this design deliberately
-  optimizes for "runs anywhere, zero API cost, zero GPU dependency" over
-  response speed. In a production deployment this would be traded for a
-  GPU-backed model server or a hosted LLM API for sub-second responses.
+- **Small quantized model, CPU-only.** Started at a 3B-parameter model in q4
+  quantization (~2GB), then dropped to 1.5B (~1.1GB, same Q4_K_M quantization)
+  after profiling showed generation was the dominant cost on the free 2-vCPU
+  Hugging Face Space — the 1.5B swap cut local generation latency roughly in
+  half (~27-30s → ~14.5s per question on a 12-core/7.6GB dev machine) with no
+  visible loss of grounding quality on the same test questions, since the task
+  is summarizing/citing retrieved text rather than open-ended reasoning. On
+  the actual free-tier Space (2 vCPUs), a real question took ~138s end-to-end
+  — slower than local, as expected, and a useful reminder that dev-machine
+  benchmarks don't automatically transfer to constrained hosting. This also
+  surfaced a real bug: `n_threads` was set from `os.cpu_count()`, which can
+  report a container's *host* core count rather than its actual cgroup-limited
+  quota, causing llama.cpp to oversubscribe threads and stall past a
+  280-second timeout entirely (fixed by using `os.sched_getaffinity(0)` plus
+  an explicit `LLM_THREADS` override for known-constrained deploy targets).
+  The tradeoff is latency instead of cost: this design deliberately optimizes
+  for "runs anywhere, zero API cost, zero GPU dependency" over raw response
+  speed or maximum model capability. In a production deployment this would be
+  traded for a GPU-backed model server or a hosted LLM API for sub-second
+  responses.
 - **Self-contained container.** The Docker image bakes in the model and index
   so the whole stack (retrieval + generation) ships as one artifact, which is
   what makes a single-container deploy target (e.g. Hugging Face Spaces)
