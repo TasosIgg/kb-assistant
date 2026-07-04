@@ -36,3 +36,11 @@ class Retriever:
             chunk = self.chunks[idx]
             results.append({**chunk, "distance": float(dist)})
         return results
+
+    def reload(self):
+        """Re-read the index/chunk files from disk in place (after a reindex)."""
+        if not INDEX_PATH.exists() or not CHUNKS_PATH.exists():
+            raise FileNotFoundError("Knowledge base index not found.")
+        self.index = faiss.read_index(str(INDEX_PATH))
+        with open(CHUNKS_PATH, "rb") as f:
+            self.chunks = pickle.load(f)

@@ -9,6 +9,7 @@ import re
 import time
 import pickle
 import urllib.parse
+from pathlib import Path
 
 import requests
 import faiss
@@ -36,8 +37,9 @@ EMBED_MODEL = "all-MiniLM-L6-v2"
 CHUNK_MAX_CHARS = 1800   # ~300-500 tokens
 CHUNK_OVERLAP_CHARS = 200
 
-INDEX_PATH = "data/kb_index.faiss"
-CHUNKS_PATH = "data/kb_chunks.pkl"
+BASE_DIR = Path(__file__).resolve().parent
+INDEX_PATH = str(BASE_DIR / "data" / "kb_index.faiss")
+CHUNKS_PATH = str(BASE_DIR / "data" / "kb_chunks.pkl")
 
 
 def list_markdown_files(dir_path: str) -> list[str]:
@@ -107,7 +109,7 @@ def file_path_to_url(file_path: str) -> str:
     return HANDBOOK_BASE_URL + rel
 
 
-def main():
+def run_ingest():
     print("Discovering handbook pages...")
     md_files = []
     for seed in SEED_DIRS:
@@ -151,6 +153,10 @@ def main():
         pickle.dump(chunks, f)
 
     print(f"Saved index to {INDEX_PATH} and chunk store to {CHUNKS_PATH}.")
+
+
+def main():
+    run_ingest()
 
 
 if __name__ == "__main__":

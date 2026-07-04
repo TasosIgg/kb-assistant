@@ -4,6 +4,9 @@ services:
     ports:
       - "8000:8000"
     command: uvicorn api:app --host 0.0.0.0 --port 8000
+    environment:
+      - API_KEY=${API_KEY:-dev-local-key}
+      - ALLOWED_ORIGINS=http://ui:8501,http://127.0.0.1:8501,http://localhost:8501
 
   ui:
     build: .
@@ -12,5 +15,6 @@ services:
     command: streamlit run app.py --server.address 0.0.0.0 --server.port 8501
     environment:
       - API_URL=http://api:8000/ask
+      - API_KEY=${API_KEY:-dev-local-key}
     depends_on:
       - api

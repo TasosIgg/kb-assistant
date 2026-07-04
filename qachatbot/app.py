@@ -6,6 +6,7 @@ import streamlit as st
 import requests
 
 API_URL = os.environ.get("API_URL", "http://127.0.0.1:8000/ask")
+API_KEY = os.environ.get("API_KEY", "dev-local-key")
 
 st.set_page_config(page_title="KB Assistant", page_icon="🗂️")
 
@@ -50,7 +51,7 @@ if question:
         st.write(question)
 
     with st.chat_message("assistant"):
-        with st.spinner("Searching knowledge base and generating answer..."):
+        with st.spinner("Searching knowledge base and generating answer (can take up to a few minutes on this free CPU-only demo)..."):
             try:
                 response = requests.post(
                     API_URL,
@@ -61,7 +62,8 @@ if question:
                             for t in st.session_state.history
                         ],
                     },
-                    timeout=120,
+                    headers={"X-API-Key": API_KEY},
+                    timeout=280,
                 )
 
                 if response.status_code == 200:
