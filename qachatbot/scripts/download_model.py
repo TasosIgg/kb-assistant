@@ -7,8 +7,8 @@ from pathlib import Path
 
 from huggingface_hub import hf_hub_download
 
-REPO_ID = "Qwen/Qwen2.5-3B-Instruct-GGUF"
-FILENAME = "qwen2.5-3b-instruct-q4_k_m.gguf"
+REPO_ID = "Qwen/Qwen2.5-1.5B-Instruct-GGUF"
+FILENAME = "qwen2.5-1.5b-instruct-q4_k_m.gguf"
 
 MODELS_DIR = Path(__file__).resolve().parent.parent / "models"
 

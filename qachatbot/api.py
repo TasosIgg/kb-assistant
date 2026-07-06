@@ -77,7 +77,7 @@ class QuestionRequest(BaseModel):
 def health_check():
     return {
         "status": "online",
-        "model": "Qwen2.5-3B-Instruct (GGUF, CPU)",
+        "model": "Qwen2.5-1.5B-Instruct (GGUF, CPU)",
         "chunks_indexed": len(pipeline.retriever.chunks),
     }
 
