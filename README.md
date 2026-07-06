@@ -1,13 +1,3 @@
----
-title: KB Assistant
-emoji: 🗂️
-colorFrom: blue
-colorTo: indigo
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # KB Assistant — Employee Self-Service RAG Chatbot
 
 A retrieval-augmented generation (RAG) assistant that answers employee questions
