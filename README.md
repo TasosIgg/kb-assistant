@@ -8,6 +8,24 @@ runs its actual company on this handbook, so it's a legitimate stand-in for an
 internal enterprise KB, and every answer is independently verifiable against the
 live source.
 
+**Live demo:** https://huggingface.co/spaces/TasosIggl/kb-assistant
+
+## Demo
+
+Asking a question returns a grounded answer with clickable citations back to the
+real handbook pages used, plus the actual end-to-end latency:
+
+<p align="center">
+  <img src="qachatbot/assets/demo1.png" width="600" alt="KB Assistant answering a question about GitLab's all-remote culture, with an expanded Sources section citing two real handbook pages">
+</p>
+
+Multi-turn conversation, with each answer's sources collapsible so the chat stays
+readable:
+
+<p align="center">
+  <img src="qachatbot/assets/demo2.png" width="600" alt="KB Assistant conversation showing a follow-up question about GitLab's parental leave policy with a grounded, cited answer">
+</p>
+
 ## Architecture
 
 ```
@@ -172,7 +190,3 @@ past what a typical tutorial-grade RAG demo includes:
   so the whole stack (retrieval + generation) ships as one artifact, which is
   what makes a single-container deploy target (e.g. Hugging Face Spaces)
   possible without a separate model-serving dependency.
-
-## Live demo
-
-**https://huggingface.co/spaces/TasosIggl/kb-assistant**
